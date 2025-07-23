@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Controle de Postagens</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    img {
+      width: 400px;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+      display: block;
+      margin: 0 auto 30px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 40px;
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #1e1e1e;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #333;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #333;
+    }
+
+    td[contenteditable="true"] {
+      background-color: #2a2a2a;
+    }
+
+    input[type="date"] {
+      background-color: #2a2a2a;
+      border: none;
+      color: white;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    #saveButton {
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      display: block;
+      margin: 30px auto 0;
+    }
+
+    #saveButton:hover {
+      background-color: #1976d2;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="235.png" alt="Imagem">
+
+  <h2>Tabela de Vídeos Postados por Dia - Meta: 10 por dia</h2>
+
+  <table id="videosTable">
+    <tr>
+      <th>Data: <input type="date" /></th>
+      <th>Segunda</th>
+      <th>Terça</th>
+      <th>Quarta</th>
+      <th>Quinta</th>
+      <th>Sexta</th>
+      <th>Sábado</th>
+      <th>Domingo</th>
+    </tr>
+    <script>
+      for (let i = 0; i < 8; i++) {
+        document.write('<tr><td>Vídeos postados hoje</td>');
+        for (let j = 0; j < 7; j++) {
+          document.write(`<td contenteditable="true" data-section="videos" data-row="${i}" data-col="${j}"></td>`);
+        }
+        document.write('</tr>');
+      }
+    </script>
+  </table>
+<!--███████▀▀▀░░░░░░░▀▀▀███████
+██████▀░░░░░░░░░░░░░░░▀████
+█████│░░░░░░░░░░░░░░░░│████
+████└┐░░░░░░░░░░░░░░░┌┘░███
+███░░└┐░░░░░░░░░░░░░░┌┘░░██
+███░┌┘▄▄▄▄▄░░░░░▄▄▄▄▄└┐░░██
+██▌░▄██████▄░░░▄██████▄░▐██
+███─┘░░▓▓▓▓░░░░░▓▓▓▓░░└─███
+██▀▓▓▓░▓▓▓▓░░░░░▓▓▓▓░▓▓░▀██
+██▄▓▓▓░▓▓▓▓▄▄▄▄▄▓▓▓▓░▓▓▄███
+████▄─┘█████████████└─▄████
+█████░░▐███████████▌░░█████
+██████░░▀█████████▀░░▐█████
+███████░░░░▓▓▓▓▓░░░░▄██████
+████████▄░░░░░░░░░▄████████
+███████████▓▓▓▓▓███████████
+███████████▓▓▓▓▓███████████-->
+  <h2>Tabela de Anúncios para Vendas - Meta: 20 por dia</h2>
+
+  <table id="anunciosTable">
+    <tr>
+      <th>Data: <input type="date" /></th>
+      <th>Segunda</th>
+      <th>Terça</th>
+      <th>Quarta</th>
+      <th>Quinta</th>
+      <th>Sexta</th>
+      <th>Sábado</th>
+      <th>Domingo</th>
+    </tr>
+    <script>
+      for (let i = 0; i < 8; i++) {
+        document.write('<tr><td>Anúncios postados hoje</td>');
+        for (let j = 0; j < 7; j++) {
+          document.write(`<td contenteditable="true" data-section="anuncios" data-row="${i}" data-col="${j}"></td>`);
+        }
+        document.write('</tr>');
+      }
+    </script>
+  </table>
+
+  <button id="saveButton">Salvar Dados</button>
+
+  <script>
+    function saveData(showAlert = false) {
+      const cells = document.querySelectorAll('td[contenteditable="true"]');
+      const dates = document.querySelectorAll('input[type="date"]');
+
+      const data = {
+        cells: {},
+        dates: []
+      };
+
+      // Salvar células
+      cells.forEach(cell => {
+        const key = `${cell.dataset.section}-${cell.dataset.row}-${cell.dataset.col}`;
+        data.cells[key] = cell.innerText;
+      });
+
+      // Salvar datas
+      dates.forEach((dateInput, index) => {
+        data.dates[index] = dateInput.value;
+      });
+
+      localStorage.setItem('tabelaDados', JSON.stringify(data));
+
+      if (showAlert) {
+        alert("Dados salvos com sucesso!");
+      }
+    }
+
+    function loadData() {
+      const data = JSON.parse(localStorage.getItem('tabelaDados') || '{}');
+
+      // Restaurar células
+      const cells = document.querySelectorAll('td[contenteditable="true"]');
+      cells.forEach(cell => {
+        const key = `${cell.dataset.section}-${cell.dataset.row}-${cell.dataset.col}`;
+        if (data.cells && data.cells[key]) {
+          cell.innerText = data.cells[key];
+        }
+      });
+
+      // Restaurar datas
+      const dates = document.querySelectorAll('input[type="date"]');
+      dates.forEach((dateInput, index) => {
+        if (data.dates && data.dates[index]) {
+          dateInput.value = data.dates[index];
+        }
+      });
+    }
+
+    document.getElementById('saveButton').addEventListener('click', () => {
+      saveData(true);
+    });
+
+    document.addEventListener('input', event => {
+      if (
+        event.target.matches('td[contenteditable="true"]') ||
+        event.target.matches('input[type="date"]')
+      ) {
+        saveData(false);
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', loadData);
+  </script>
+
+</body>
+</html>
